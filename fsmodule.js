@@ -7,5 +7,6 @@ const updatename=fs.renameSync(Myfile,newFile);
 console.log(updatename);
 console.log(writtenFile);
 console.log(readFile);
+fs.unlinkSync(newFile);
 
 // all are synchronous mthods for curd in fs
