@@ -2,103 +2,51 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>URL Shortener</title>
-
 <style>
-body {
-    background-color: rgb(111, 165, 111);
-    font-family: sans-serif;
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.container {
-    background: white;
-    padding: 25px 30px;
-    border-radius: 10px;
-    width: 360px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-h1 {
-    text-align: center;
-}
-
-label {
-    font-weight: bold;
-}
-
-input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-}
-
-button {
-    padding: 10px;
-    background-color: rgb(111, 165, 111);
-    border: none;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-
-#shorted_url {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.result {
-    background: #e8f5e8;
-    padding: 8px 10px;
-    border-radius: 5px;
-    font-size: 14px;
-}
+body { background:#6fa56f; font-family:sans-serif; display:flex; justify-content:center; align-items:center; height:100vh; }
+.container { background:white; padding:25px; width:350px; border-radius:10px; }
+input, button { width:100%; padding:8px; margin-top:10px; }
+button { background:#6fa56f; color:white; border:none; cursor:pointer; }
+.result { background:#e8f5e8; margin-top:10px; padding:8px; border-radius:5px; }
 </style>
 </head>
 
 <body>
-
 <div class="container">
-  <h1>URL Shortener</h1>
+<h2>URL Shortener</h2>
 
-  <form id="shortner_form">
-    <div>
-      <label>Enter the URL</label>
-      <input type="url" name="url" required>
-    </div>
+<form id="form">
+<input type="text" name="url" placeholder="Enter URL" required>
+<input type="text" name="url_short" placeholder="Custom code (optional)">
+<button>Shorten</button>
+</form>
 
-    <div>
-      <label>Custom Short Code</label>
-      <input type="text" name="url_short" required>
-    </div>
-
-    <button type="submit">Get Shortened</button>
-  </form>
-
-  <h2>Shortened URLs:</h2>
-  <div id="shorted_url"></div>
+<div id="output"></div>
 </div>
+
 <script>
-  document.getElementById('shortner_form').addEventListener('submit',(event)=>{
-    event.preventDefault();
-    const formData=new FormData(event.target);
-    const url=formData.get('url'); //name is used to get value
-    const url_short=formData.get('url_short')
-    console.log(url,url_short)
-  })
+document.getElementById("form").addEventListener("submit", async e => {
+  e.preventDefault();
+
+  const fd = new FormData(e.target);
+  const url = fd.get("url");
+  const url_short = fd.get("url_short");
+
+  const res = await fetch("/shorten", {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({ url, url_short })
+  });
+
+  const data = await res.json();
+
+  const box = document.createElement("div");
+  box.className = "result";
+  box.innerHTML = `<a href="${data.short}" target="_blank">${data.short}</a>`;
+
+  document.getElementById("output").appendChild(box);
+});
 </script>
 </body>
 </html>
