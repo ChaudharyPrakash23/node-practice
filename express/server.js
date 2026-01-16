@@ -1,14 +1,27 @@
 import express from "express";
 const server = express();
+import router from "./routes.js";
+import path from "path";
 
+server.use(express.urlencoded({ extended: true }));
+server.use(express.json());
+
+server.set("views", path.join(process.cwd()));
+server.set("view engine", "ejs");
 
 server.get("/", (req, res) => {
   res.write("hello this is express server");
   res.end();
 });
-server.get("/about", (req, res) => {
-  res.send("<h1>hello this is from about page</h1>");
+server.get("/report", (req, res) => {
+  const student={
+    name:"praksh",
+    age:"23",
+    college:"ncit"
+  }
+  res.render("report",{student});
 });
+server.use(router);
 server.get("/contact", (req, res) => {
   return res.send(`
         <div class="container">
@@ -23,7 +36,7 @@ server.get("/contact", (req, res) => {
 <div id="output"></div>
 </div>`);
 });
-const port=process.env.PORT ||3000;
+const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.log(`server is running in port ${port}`);
 });
