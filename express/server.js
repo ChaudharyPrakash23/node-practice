@@ -2,6 +2,7 @@ import express from "express";
 const server = express();
 import router from "./routes.js";
 import path from "path";
+import { controller } from "./controller.js";
 
 server.use(express.urlencoded({ extended: true }));
 server.use(express.json());
@@ -36,6 +37,7 @@ server.get("/contact", (req, res) => {
 <div id="output"></div>
 </div>`);
 });
+server.get("/controller",controller)
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
   console.log(`server is running in port ${port}`);
